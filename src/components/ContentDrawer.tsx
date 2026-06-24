@@ -1,17 +1,24 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { ContentItem, ContentStatus } from '@/lib/types'
+import type { Asset, ContentItem, ContentStatus } from '@/lib/types'
 import { nextStatuses, STATUS_LABEL } from '@/lib/domain/status'
-import { saveCaption, changeStatus } from '@/app/(app)/actions'
+import { saveCaption, changeStatus, getAssets } from '@/app/(app)/actions'
 import PlatformBadge from './PlatformBadge'
 import StatusBadge from './StatusBadge'
 
 export default function ContentDrawer({ item, onClose }: { item: ContentItem; onClose: () => void }) {
   const router = useRouter()
   const [caption, setCaption] = useState(item.caption ?? '')
+  const [assets, setAssets] = useState<Asset[]>([])
+
+  useEffect(() => {
+    getAssets(item.id).then(setAssets).catch(() => {})
+  }, [item.id])
 
   const next = nextStatuses(item.content_status)
+  const generating = item.asset_status === 'generating'
+  const latest = assets[assets.length - 1]
 
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
@@ -23,7 +30,20 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
-          <div className="h-40 rounded-xl bg-gradient-to-br from-indigo-200 to-indigo-400" />
+          <div className="relative h-44 rounded-xl overflow-hidden bg-gray-100">
+            {generating ? (
+              <div className="absolute inset-0 grid place-items-center text-xs text-gray-500">
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 rounded-full border-2 border-brand border-t-transparent animate-spin" />
+                  圖片生成中
+                </span>
+              </div>
+            ) : latest ? (
+              <img src={latest.url} alt={item.title} className="w-full h-full object-cover" />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-200 to-indigo-400" />
+            )}
+          </div>
 
           <div className="flex items-center gap-2">
             <PlatformBadge platform={item.platform} />
