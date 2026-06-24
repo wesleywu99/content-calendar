@@ -18,7 +18,50 @@
 - 各 flow 單次價格（顯示在確認框）。
 - flow 是否能直接寫我們的 Supabase 表（建議：能）。
 - 圖片儲存：Supabase Storage（預設）或外部 URL。
-- 允許登入的網域：`@fimmick.com`。
+- 登入：**本期不做**，改用 URL token 輕量門禁（見修訂 A）。
+
+---
+
+## 修訂 A（2026-06-24）— 不做登入，改用 URL token 輕量門禁
+
+本期 MVP **不做 Google 登入**，改用「**網址帶 token 的輕量門禁**」擋掉無關使用者。token = `openbeauty`（存於環境變數 `APP_ACCESS_TOKEN`）。以下內容覆蓋計畫中所有認證相關部分，opencode 以此為準：
+
+- **Phase 2 Task 2.2（Google 登入 / callback）：本期整個跳過，不要做。**
+- **改為 token 門禁（middleware）**：訪問需帶 `?token=openbeauty`；通過後寫入一個 httpOnly cookie，之後免帶；未通過 → 回 401。實作：
+  ```ts
+  // src/middleware.ts
+  import { NextResponse, type NextRequest } from 'next/server'
+  const COOKIE = 'app_access'
+  export function middleware(req: NextRequest) {
+    const token = process.env.APP_ACCESS_TOKEN
+    const qp = new URL(req.url).searchParams.get('token')
+    const has = req.cookies.get(COOKIE)?.value === token
+    if (token && (qp === token || has)) {
+      const res = NextResponse.next()
+      if (qp === token) res.cookies.set(COOKIE, token, { httpOnly: true, sameSite: 'lax', path: '/' })
+      return res
+    }
+    return new NextResponse('需要存取權杖（在網址後加 ?token=…）', { status: 401 })
+  }
+  export const config = { matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'] }
+  ```
+- **Phase 2 Task 2.1**：只做「伺服器端 service_role client」，不做 browser client / SSR cookie。所有 DB 存取一律走伺服器端（Server Component / Action / Route Handler）。實作：
+  ```ts
+  // src/lib/supabase/server.ts
+  import { createClient as createSb } from '@supabase/supabase-js'
+  export async function createClient() {
+    return createSb(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,   // 伺服器端專用
+      { auth: { persistSession: false } },
+    )
+  }
+  ```
+  （RLS 保持開啟；service_role 繞過 RLS，故 `0002_rls.sql` 照建即可。）
+- **Phase 6.2 觸發 route**：移除 `auth.getUser()` 與 401 檢查；`triggered_by` 暫填 `'system'`。
+- **Phase 7.3 realtime**：本期延後（realtime 需 client + 登入/RLS）。改用動作後 `router.refresh()` 更新畫面。
+- **Phase 8 部署**：⚠️ token 門禁只是「擋無關的人」，**不是真正的安全**（連結外洩即失效；會留在瀏覽器/伺服器 log）。對外正式上線前仍須補正式登入（見文末附錄）。本期僅供本機 / 內部測試。
+- `.env.local` 需含：`NEXT_PUBLIC_SUPABASE_URL`、`SUPABASE_SERVICE_ROLE_KEY`、`APP_ACCESS_TOKEN`。
 
 ---
 
@@ -944,3 +987,15 @@ export async function POST(req: Request) {
 - **型別一致**：`ContentItem`/`ContentStatus`/`Platform` 等在 types.ts 定義，repo/components 引用一致；`generationCost`/`canTransition`/`createRun` 命名跨任務一致。✅
 
 待補（依賴使用者）：平台 API 合約（8.2）、單次價格來源（cost.ts 目前硬編 $8）、圖片儲存位置。
+
+---
+
+## 附錄：未來加入登入（本期以 token 門禁替代）
+
+要把正式登入加回來時：
+1. 安裝 `@supabase/ssr`；新增 browser client（anon key）與 SSR cookie server client。
+2. 加 `src/app/login/page.tsx`（Google OAuth, `hd: fimmick.com`）、`src/app/auth/callback/route.ts`（exchange code + 檢查 email 結尾 `@fimmick.com`）。
+3. `src/middleware.ts` 改為：未登入 → 轉 `/login`（取代 token 門禁）。
+4. Supabase 啟用 Google provider、設定 redirect URL；`.env.local` 補 `NEXT_PUBLIC_SUPABASE_ANON_KEY`。
+5. 一般讀寫改用「使用者 session」server client（非 service_role）讓 RLS 生效；僅後端管理動作用 service_role。
+6. Phase 6.2 route 改回以登入者 email 當 `triggered_by`；啟用 Phase 7.3 realtime。
