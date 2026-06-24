@@ -10,6 +10,8 @@ const PLATFORM_CHIP: Record<string, string> = {
   facebook: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
 }
 
+const MAX_VISIBLE = 3
+
 interface Props {
   month: Date
   items: ContentItem[]
@@ -29,7 +31,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
   }
 
   return (
-    <div className="rounded-xl bg-white shadow-sm ring-1 ring-zinc-900/5 overflow-hidden">
+    <div className="rounded-2xl bg-white shadow-card ring-1 ring-zinc-200/60 overflow-hidden flex flex-col">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="text-base font-semibold tracking-tight text-zinc-900">{format(month, 'yyyy 年 M 月')}</div>
         <div className="flex items-center gap-1">
@@ -60,39 +62,49 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
         </div>
       </div>
 
-      <div className="grid grid-cols-7 border-t border-zinc-100">
+      <div className="grid grid-cols-7 bg-zinc-50/80 border-b border-zinc-200/60 shrink-0">
         {WEEKDAYS.map((w) => (
-          <div key={w} className="px-3 py-2 text-xs font-medium text-zinc-400">週{w}</div>
+          <div key={w} className="py-2.5 text-center text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+            {w}
+          </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 border-t border-zinc-100">
+      <div className="flex-1 grid grid-cols-7 gap-px bg-zinc-100">
         {days.map((d) => {
           const inMonth = isSameMonth(d, month)
           const isToday = format(d, 'yyyy-MM-dd') === todayKey
           const dayItems = itemsFor(d)
+          const visible = dayItems.slice(0, MAX_VISIBLE)
+          const hiddenCount = dayItems.length - MAX_VISIBLE
+
           return (
             <div
               key={format(d, 'yyyy-MM-dd')}
-              className={`min-h-[104px] p-2 border-b border-r border-zinc-100 ${inMonth ? '' : 'bg-zinc-50/50'}`}
+              className={`p-1.5 min-h-[112px] flex flex-col gap-1 transition-colors ${inMonth ? 'bg-white hover:bg-zinc-50/50' : 'bg-zinc-50/60'}`}
             >
-              <div className="flex items-center justify-center">
-                <span className={`text-xs w-6 h-6 flex items-center justify-center rounded-full transition-colors ${isToday ? 'bg-zinc-900 text-white font-medium' : inMonth ? 'text-zinc-600' : 'text-zinc-300'}`}>
+              <div className="flex items-center pl-0.5 pt-0.5">
+                <span className={`text-xs font-medium flex items-center justify-center ${isToday ? 'bg-zinc-900 text-white w-6 h-6 rounded-full' : inMonth ? 'text-zinc-600' : 'text-zinc-300'}`}>
                   {format(d, 'd')}
                 </span>
               </div>
-              <div className="mt-1 space-y-1">
-                {dayItems.map((it) => (
-                  <button
-                    key={it.id}
-                    type="button"
-                    onClick={() => onOpen(it.id)}
-                    className={`w-full text-left rounded-md px-2 py-1 text-[11px] font-medium truncate transition-colors ${PLATFORM_CHIP[it.platform] ?? 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'}`}
-                  >
-                    {it.title}
-                  </button>
-                ))}
-              </div>
+
+              {visible.map((it) => (
+                <button
+                  key={it.id}
+                  type="button"
+                  onClick={() => onOpen(it.id)}
+                  className={`w-full text-left rounded-md px-2 py-1 text-[11px] font-medium truncate transition-colors ${PLATFORM_CHIP[it.platform] ?? 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'}`}
+                >
+                  {it.title}
+                </button>
+              ))}
+
+              {hiddenCount > 0 && (
+                <span className="text-[10px] font-medium text-zinc-400 pl-2">
+                  +{hiddenCount} 更多
+                </span>
+              )}
             </div>
           )
         })}

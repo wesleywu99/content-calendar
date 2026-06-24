@@ -44,8 +44,8 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[1px]" />
-      <div className="relative w-[460px] max-w-[92vw] rounded-2xl bg-white shadow-2xl p-7">
+      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[1px] animate-overlay-in" />
+      <div className="relative w-[460px] max-w-[92vw] rounded-2xl bg-white shadow-2xl p-7 animate-modal-in">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold tracking-tight text-zinc-900">新增內容構想</h2>
           <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors">

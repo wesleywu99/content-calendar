@@ -5,7 +5,7 @@ import StatusBadge from './StatusBadge'
 export default function Queue({ items, onOpen }: { items: ContentItem[]; onOpen?: (id: string) => void }) {
   const pending = items.filter((it) => it.content_status !== 'approved')
   return (
-    <div className="rounded-xl bg-white shadow-sm ring-1 ring-zinc-900/5 overflow-hidden">
+    <div className="rounded-xl bg-white shadow-card ring-1 ring-zinc-900/5 overflow-hidden">
       <div className="px-5 py-4 text-sm font-medium text-zinc-900">需要處理</div>
       <ul className="divide-y divide-zinc-100">
         {pending.map((it) => (

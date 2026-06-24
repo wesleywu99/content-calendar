@@ -15,8 +15,8 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
 
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
-      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[1px]" />
-      <aside className="relative w-[440px] max-w-[90vw] bg-white h-full shadow-2xl flex flex-col">
+      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[1px] animate-overlay-in" />
+      <aside className="relative w-[440px] max-w-[90vw] bg-white h-full shadow-2xl flex flex-col animate-drawer-in">
         <div className="flex items-center justify-between px-6 h-16">
           <div className="text-sm font-medium text-zinc-500">內容詳情</div>
           <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors">
