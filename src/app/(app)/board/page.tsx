@@ -9,11 +9,13 @@ export default async function BoardPage() {
   const supabase = await createClient()
   const items = await listContent(supabase)
   return (
-    <div className="flex flex-col h-full">
-      <TopBar title="看板" />
-      <main className="flex-1 overflow-auto p-8 bg-zinc-50">
-        <Board items={items} />
-      </main>
-    </div>
+    <>
+      <TopBar />
+      <div className="px-10 py-5 shrink-0">
+        <h2 className="text-xl font-semibold tracking-tight text-on-surface">內容看板</h2>
+        <p className="text-on-surface-variant text-sm mt-0.5">管理並追蹤即將發佈的社群貼文</p>
+      </div>
+      <Board items={items} />
+    </>
   )
 }

@@ -5,12 +5,12 @@ import CalendarView from '@/components/CalendarView'
 
 export const dynamic = 'force-dynamic'
 
-export default async function HomePage() {
+export default async function DashboardPage() {
   const supabase = await createClient()
   const items = await listContent(supabase)
   return (
     <>
-      <TopBar title="月曆" />
+      <TopBar />
       <CalendarView items={items} />
     </>
   )

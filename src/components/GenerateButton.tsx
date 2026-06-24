@@ -2,16 +2,21 @@
 import { useState } from 'react'
 import GenerateModal from './GenerateModal'
 
-export default function GenerateButton() {
+export default function GenerateButton({ variant = 'compact' }: { variant?: 'compact' | 'full' }) {
   const [open, setOpen] = useState(false)
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 active:scale-[0.98] transition-all"
+        className={
+          variant === 'full'
+            ? 'w-full flex items-center justify-center gap-2 bg-on-primary-fixed-variant text-on-primary py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity'
+            : 'flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-md font-medium text-sm hover:bg-primary-container transition-all'
+        }
       >
-        新增構想
+        {variant === 'full' && <span className="material-symbols-outlined">add</span>}
+        {variant === 'full' ? '新增構想' : '生成內容'}
       </button>
       {open && <GenerateModal onClose={() => setOpen(false)} />}
     </>

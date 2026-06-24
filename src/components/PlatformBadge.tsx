@@ -6,16 +6,31 @@ const LABEL: Record<Platform, string> = {
   facebook: 'FB',
 }
 
-const CLS: Record<Platform, string> = {
-  xiaohongshu: 'bg-rose-50 text-rose-600',
-  instagram: 'bg-violet-50 text-violet-600',
-  facebook: 'bg-blue-50 text-blue-600',
+const DOT: Record<Platform, string> = {
+  xiaohongshu: 'bg-error',
+  instagram: 'bg-primary',
+  facebook: 'bg-blue-400',
 }
 
-export default function PlatformBadge({ platform }: { platform: Platform }) {
+const TEXT: Record<Platform, string> = {
+  xiaohongshu: 'text-error',
+  instagram: 'text-primary',
+  facebook: 'text-blue-400',
+}
+
+export default function PlatformBadge({ platform, tag = false }: { platform: Platform; tag?: boolean }) {
+  if (tag) {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-surface-container-low label-caps">
+        <span className={`w-1.5 h-1.5 rounded-full ${DOT[platform]}`} />
+        {LABEL[platform]}
+      </span>
+    )
+  }
   return (
-    <span className={`inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full ${CLS[platform]}`}>
-      {LABEL[platform]}
+    <span className="inline-flex items-center gap-1.5">
+      <span className={`w-1.5 h-1.5 rounded-full ${DOT[platform]}`} />
+      <span className={`label-caps ${TEXT[platform]}`}>{LABEL[platform]}</span>
     </span>
   )
 }

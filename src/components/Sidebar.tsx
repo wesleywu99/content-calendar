@@ -1,36 +1,54 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import GenerateButton from './GenerateButton'
 
 const NAV = [
-  { href: '/', label: '儀表板' },
-  { href: '/board', label: '看板' },
+  { href: '/', label: '儀表板', icon: 'dashboard' },
+  { href: '/board', label: '看板', icon: 'view_kanban' },
 ]
 
 export default function Sidebar() {
   const pathname = usePathname()
   return (
-    <aside className="w-60 shrink-0 bg-white border-r border-zinc-100 flex flex-col">
-      <div className="h-16 flex items-center gap-2.5 px-6">
-        <div className="w-7 h-7 rounded-lg bg-zinc-900" />
-        <span className="font-semibold tracking-tight text-zinc-900">內容中心</span>
+    <aside className="w-64 shrink-0 border-r border-outline-variant bg-surface flex flex-col py-6 px-4 overflow-y-auto custom-scrollbar">
+      <div className="mb-8 px-2">
+        <h1 className="text-2xl font-semibold tracking-tight text-on-surface">ContentFlow</h1>
+        <p className="label-caps text-on-surface-variant mt-1">SaaS Platform</p>
       </div>
-      <nav className="flex-1 px-3 py-2 space-y-0.5">
+
+      <nav className="flex-1 space-y-1">
         {NAV.map((item) => {
           const active = pathname === item.href
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`block rounded-lg px-3 py-2 text-sm transition-colors ${active ? 'bg-zinc-100 text-zinc-900 font-medium' : 'text-zinc-600 hover:bg-zinc-100/70 hover:text-zinc-900'}`}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${active ? 'text-primary font-bold bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container-low'}`}
             >
-              {item.label}
+              <span
+                className="material-symbols-outlined"
+                style={active ? { fontVariationSettings: "'FILL' 1" } : undefined}
+              >
+                {item.icon}
+              </span>
+              <span className="text-[15px]">{item.label}</span>
             </Link>
           )
         })}
       </nav>
-      <div className="px-6 py-4 text-[11px] text-zinc-400">
-        團隊共用介面 · 內部測試
+
+      <div className="mt-auto space-y-4 pt-4">
+        <GenerateButton variant="full" />
+        <div className="flex items-center gap-3 p-2 border border-outline-variant rounded-xl bg-surface-container-lowest">
+          <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-bold text-on-surface-variant">
+            AR
+          </div>
+          <div className="overflow-hidden">
+            <p className="text-sm font-medium truncate text-on-surface">Alex Rivera</p>
+            <p className="label-caps text-on-surface-variant">Pro Plan</p>
+          </div>
+        </div>
       </div>
     </aside>
   )

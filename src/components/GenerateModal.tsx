@@ -44,18 +44,18 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[1px] animate-overlay-in" />
-      <div className="relative w-[460px] max-w-[92vw] rounded-2xl bg-white shadow-2xl p-7 animate-modal-in">
+      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-inverse-surface/20 backdrop-blur-[1px] animate-overlay-in" />
+      <div className="relative w-[460px] max-w-[92vw] rounded-2xl bg-surface shadow-2xl p-7 border border-outline-variant/30 animate-modal-in">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold tracking-tight text-zinc-900">新增內容構想</h2>
-          <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors">
-            ✕
+          <h2 className="text-lg font-semibold tracking-tight text-on-surface">新增內容構想</h2>
+          <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:bg-surface-container-low hover:text-on-surface transition-colors">
+            <span className="material-symbols-outlined">close</span>
           </button>
         </div>
 
         <div className="space-y-5">
           <div>
-            <label className="block text-xs font-medium text-zinc-500 mb-2">平台</label>
+            <label className="block label-caps text-on-surface-variant mb-2">平台</label>
             <div className="flex gap-2">
               {PLATFORMS.map((p) => {
                 const on = selected.includes(p.key)
@@ -64,7 +64,7 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
                     key={p.key}
                     type="button"
                     onClick={() => toggle(p.key)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97] ${on ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'}`}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${on ? 'bg-primary text-on-primary' : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'}`}
                   >
                     {p.label}
                   </button>
@@ -74,52 +74,52 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-500 mb-2">主題</label>
+            <label className="block label-caps text-on-surface-variant mb-2">主題</label>
             <input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="例如：端午節限定口味"
-              className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition-all"
+              className="w-full rounded-lg border border-outline-variant px-3 py-2 text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-500 mb-2">發佈日期</label>
+            <label className="block label-caps text-on-surface-variant mb-2">發佈日期</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition-all"
+              className="w-full rounded-lg border border-outline-variant px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3">
-            <span className="text-sm text-zinc-500">預估費用</span>
-            <span className="text-sm font-semibold text-zinc-900">{cost}</span>
+          <div className="flex items-center justify-between rounded-lg bg-surface-container-low px-4 py-3">
+            <span className="text-sm text-on-surface-variant">預估費用</span>
+            <span className="text-sm font-semibold text-on-surface">{cost}</span>
           </div>
         </div>
 
         <div className="mt-6 flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition-colors">
+          <button type="button" onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-medium text-on-surface-variant hover:bg-surface-container-low transition-colors">
             取消
           </button>
           <button
             type="button"
             onClick={confirm}
             disabled={status === 'generating' || selected.length === 0 || !topic}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 active:scale-[0.98] disabled:opacity-40 disabled:hover:bg-zinc-900 transition-all"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-primary-container active:scale-[0.98] disabled:opacity-40 disabled:hover:bg-primary transition-all"
           >
             {status === 'generating' ? '生成中…' : status === 'done' ? '已送出 ✓' : '確認生成'}
           </button>
         </div>
 
         {status === 'generating' && (
-          <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500">
-            <span className="inline-block w-3 h-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
+          <div className="mt-3 flex items-center gap-2 text-xs text-on-surface-variant">
+            <span className="inline-block w-3 h-3 rounded-full border-2 border-outline border-t-transparent animate-spin" />
             正在生成草稿…
           </div>
         )}
-        {status === 'error' && <div className="mt-3 text-xs text-red-500">生成失敗，請重試。</div>}
+        {status === 'error' && <div className="mt-3 text-xs text-error">生成失敗，請重試。</div>}
       </div>
     </div>
   )

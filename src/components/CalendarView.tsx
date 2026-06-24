@@ -16,7 +16,7 @@ export default function CalendarView({ items }: { items: ContentItem[] }) {
 
   return (
     <>
-      <div className="flex-1 overflow-auto p-8">
+      <div className="flex-1 overflow-hidden">
         <CalendarGrid month={month} items={items} onMonthChange={setMonth} onOpen={setOpenId} />
       </div>
       {openItem && <ContentDrawer item={openItem} onClose={() => setOpenId(null)} />}

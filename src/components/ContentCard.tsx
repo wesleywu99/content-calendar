@@ -13,16 +13,18 @@ export default function ContentCard({ item, onOpen }: { item: ContentItem; onOpe
     <button
       type="button"
       onClick={() => onOpen?.(item.id)}
-      className="group w-full text-left rounded-xl bg-white shadow-card ring-1 ring-zinc-900/5 p-4 hover:shadow-card-hover hover:ring-zinc-900/10 hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 transition-all duration-200"
+      className="group w-full text-left bg-surface-container-lowest border border-outline-variant rounded-xl p-3 shadow-sm hover:border-primary hover:shadow-md transition-all duration-200"
     >
-      <div className="flex items-center justify-between">
-        <PlatformBadge platform={item.platform} />
-        <StatusBadge status={item.content_status} />
+      <div className="flex justify-between items-start mb-2">
+        <PlatformBadge platform={item.platform} tag />
       </div>
-      <div className="mt-2.5 text-sm font-medium text-zinc-800 group-hover:text-zinc-900 line-clamp-2 transition-colors">
+      <h4 className="text-sm font-medium text-on-surface mb-2 leading-tight line-clamp-2 group-hover:text-primary transition-colors">
         {item.title}
+      </h4>
+      <div className="flex items-center justify-between">
+        <StatusBadge status={item.content_status} />
+        <span className="text-xs text-on-surface-variant">{dateLabel}</span>
       </div>
-      <div className="mt-1 text-xs text-zinc-400">{dateLabel}</div>
     </button>
   )
 }
