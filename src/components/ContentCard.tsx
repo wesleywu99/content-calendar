@@ -3,39 +3,27 @@ import type { ContentItem } from '@/lib/types'
 import PlatformBadge from './PlatformBadge'
 import StatusBadge from './StatusBadge'
 
-const PLATFORM_COLOR: Record<string, string> = {
-  xiaohongshu: '#d98484',
-  instagram: '#c78599',
-  facebook: '#7d8ba3',
-}
-
 export default function ContentCard({ item, onOpen }: { item: ContentItem; onOpen?: (id: string) => void }) {
-  const color = PLATFORM_COLOR[item.platform] ?? '#a1a1aa'
+  const shortDate = item.publish_date ? item.publish_date.slice(5) : null
+
   return (
     <button
       type="button"
       onClick={() => onOpen?.(item.id)}
-      className="w-full text-left rounded-xl bg-white cursor-pointer transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
-      style={{
-        borderLeft: `3px solid ${color}`,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03)'
-      }}
+      className="w-full text-left bg-white rounded-xl p-4 flex flex-col gap-3 cursor-pointer ring-1 ring-zinc-200/60 shadow-sm transition-all duration-200 hover:shadow-md hover:ring-zinc-300 hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm"
     >
-      <div className="px-4 py-3.5">
-        <div className="text-sm font-medium text-zinc-800 leading-snug truncate">{item.title}</div>
-        <div className="mt-2.5 flex items-center gap-1.5 flex-wrap">
+      <h4 className="text-sm font-semibold text-zinc-800 leading-snug line-clamp-2">
+        {item.title}
+      </h4>
+
+      <div className="flex items-center justify-between mt-auto">
+        <div className="flex gap-1.5">
           <PlatformBadge platform={item.platform} />
           <StatusBadge status={item.content_status} />
-          {item.publish_date && (
-            <span className="text-[11px] text-zinc-400 ml-auto font-medium">{item.publish_date}</span>
-          )}
         </div>
+        {shortDate && (
+          <span className="text-xs font-medium text-zinc-400">{shortDate}</span>
+        )}
       </div>
     </button>
   )
