@@ -4,27 +4,42 @@ import { usePathname } from 'next/navigation'
 import GenerateButton from './GenerateButton'
 
 const NAV = [
-  { href: '/', label: '儀表板', icon: 'dashboard' },
-  { href: '/board', label: '看板', icon: 'view_kanban' },
+  { href: '/', label: 'Dashboard', icon: 'dashboard' },
+  { href: '/', label: 'Calendar', icon: 'calendar_month' },
+  { href: '/board', label: 'Board', icon: 'view_kanban' },
 ]
 
 export default function Sidebar() {
   const pathname = usePathname()
   return (
-    <aside className="w-64 shrink-0 border-r border-outline-variant bg-surface flex flex-col py-6 px-4 overflow-y-auto custom-scrollbar">
-      <div className="mb-8 px-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-on-surface">ContentFlow</h1>
-        <p className="label-caps text-on-surface-variant mt-1">SaaS Platform</p>
+    <aside className="w-64 shrink-0 h-screen fixed left-0 top-0 flex flex-col py-6 px-4 bg-surface z-50">
+      {/* Logo */}
+      <div className="mb-10 px-2">
+        <h1 className="text-[32px] font-semibold tracking-[-0.03em] leading-[1.2] text-on-surface">
+          ContentFlow
+        </h1>
+        <p className="label-caps text-on-surface-variant uppercase mt-1">SaaS Platform</p>
       </div>
 
+      {/* Navigation */}
       <nav className="flex-1 space-y-1">
-        {NAV.map((item) => {
-          const active = pathname === item.href
+        {NAV.map((item, idx) => {
+          // "Board" (idx=2) is the active item in the mockup, but we use pathname logic
+          const active =
+            item.href === '/board'
+              ? pathname === '/board'
+              : item.href === '/'
+                ? pathname === '/' || pathname.startsWith('/calendar')
+                : false
           return (
             <Link
-              key={item.href}
+              key={item.label}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${active ? 'text-primary font-bold bg-surface-container-low' : 'text-on-surface-variant hover:bg-surface-container-low'}`}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${
+                active
+                  ? 'text-primary font-bold border-r-2 border-primary bg-surface-container-low'
+                  : 'text-on-surface-variant hover:bg-surface-container-low'
+              }`}
             >
               <span
                 className="material-symbols-outlined"
@@ -38,17 +53,9 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto space-y-4 pt-4">
+      {/* Bottom section */}
+      <div className="mt-auto pt-4">
         <GenerateButton variant="full" />
-        <div className="flex items-center gap-3 p-2 border border-outline-variant rounded-xl bg-surface-container-lowest">
-          <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-sm font-bold text-on-surface-variant">
-            AR
-          </div>
-          <div className="overflow-hidden">
-            <p className="text-sm font-medium truncate text-on-surface">Alex Rivera</p>
-            <p className="label-caps text-on-surface-variant">Pro Plan</p>
-          </div>
-        </div>
       </div>
     </aside>
   )

@@ -11,12 +11,12 @@ export default function GenerateButton({ variant = 'compact' }: { variant?: 'com
         onClick={() => setOpen(true)}
         className={
           variant === 'full'
-            ? 'w-full flex items-center justify-center gap-2 bg-on-primary-fixed-variant text-on-primary py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity'
-            : 'flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-md font-medium text-sm hover:bg-primary-container transition-all'
+            ? 'w-full flex items-center justify-center gap-2 bg-on-primary-fixed-variant text-white py-3 rounded-lg text-[18px] font-medium leading-[1.4] tracking-[-0.01em] hover:opacity-90 transition-opacity'
+            : 'flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-primary-container transition-all'
         }
       >
         {variant === 'full' && <span className="material-symbols-outlined">add</span>}
-        {variant === 'full' ? '新增構想' : '生成內容'}
+        {variant === 'full' ? 'Generate Content' : 'Generate Content'}
       </button>
       {open && <GenerateModal onClose={() => setOpen(false)} />}
     </>

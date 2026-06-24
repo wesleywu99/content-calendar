@@ -4,9 +4,11 @@ const COOKIE = 'app_access'
 
 export function proxy(req: NextRequest) {
   const token = process.env.APP_ACCESS_TOKEN
+  // Skip access gate when no token is configured
+  if (!token) return NextResponse.next()
   const qp = new URL(req.url).searchParams.get('token')
   const has = req.cookies.get(COOKIE)?.value === token
-  if (token && (qp === token || has)) {
+  if (qp === token || has) {
     const res = NextResponse.next()
     if (qp === token) res.cookies.set(COOKIE, token, { httpOnly: true, sameSite: 'lax', path: '/' })
     return res

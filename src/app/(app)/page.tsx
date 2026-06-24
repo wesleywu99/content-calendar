@@ -1,13 +1,21 @@
-import { createClient } from '@/lib/supabase/server'
-import { listContent } from '@/lib/repo/content'
 import TopBar from '@/components/TopBar'
 import CalendarView from '@/components/CalendarView'
+import { MOCK_ITEMS } from '@/lib/mock-data'
 
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const items = await listContent(supabase)
+  let items = MOCK_ITEMS
+  try {
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      const { createClient } = await import('@/lib/supabase/server')
+      const { listContent } = await import('@/lib/repo/content')
+      const supabase = await createClient()
+      items = await listContent(supabase)
+    }
+  } catch {
+    // Fall back to mock data
+  }
   return (
     <>
       <TopBar />

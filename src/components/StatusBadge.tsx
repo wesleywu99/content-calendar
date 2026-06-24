@@ -10,7 +10,7 @@ const CLS: Record<ContentStatus, string> = {
 
 export default function StatusBadge({ status }: { status: ContentStatus }) {
   return (
-    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${CLS[status]}`}>
+    <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded ${CLS[status]}`}>
       {STATUS_LABEL[status]}
     </span>
   )
