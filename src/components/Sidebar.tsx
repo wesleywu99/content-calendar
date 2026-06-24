@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation'
 
 const NAV = [
   { href: '/', label: '儀表板' },
-  { href: '/calendar', label: '月曆' },
   { href: '/board', label: '看板' },
 ]
 
