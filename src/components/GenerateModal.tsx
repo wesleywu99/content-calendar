@@ -47,7 +47,7 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
       <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-black/30" />
       <div className="relative w-[440px] max-w-[92vw] rounded-2xl bg-white shadow-xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold">生成內容</h2>
+          <h2 className="text-base font-semibold">新增創意</h2>
           <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600">✕</button>
         </div>
 
@@ -107,14 +107,14 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
             disabled={status === 'generating' || selected.length === 0 || !topic}
             className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50 disabled:hover:bg-gray-900 transition-colors"
           >
-            {status === 'generating' ? '生成中…' : status === 'done' ? '已送出 ✓' : '確認生成'}
+            {status === 'generating' ? '建立中…' : status === 'done' ? '已建立 ✓' : '建立創意草稿'}
           </button>
         </div>
 
         {status === 'generating' && (
           <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
             <span className="inline-block w-3 h-3 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
-            正在生成草稿…
+            正在建立創意草稿…
           </div>
         )}
         {status === 'error' && <div className="mt-3 text-xs text-red-500">生成失敗，請重試。</div>}

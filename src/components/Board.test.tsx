@@ -15,6 +15,6 @@ describe('Board', () => {
     expect(screen.getByText('草稿A')).toBeInTheDocument()
     expect(screen.getByText('審核B')).toBeInTheDocument()
     expect(screen.getByText('核准C')).toBeInTheDocument()
-    expect(screen.getByText('草稿')).toBeInTheDocument()
+    expect(screen.getAllByText('草稿').length).toBeGreaterThanOrEqual(1)
   })
 })

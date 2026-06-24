@@ -1,27 +1,32 @@
 'use client'
 import type { ContentItem } from '@/lib/types'
 import PlatformBadge from './PlatformBadge'
+import StatusBadge from './StatusBadge'
 
-function gradientFor(id: string) {
-  let h = 0
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 360
-  return `linear-gradient(135deg, hsl(${h} 15% 91%), hsl(${(h + 40) % 360} 12% 83%))`
+const PLATFORM_COLOR: Record<string, string> = {
+  xiaohongshu: '#d98484',
+  instagram: '#c78599',
+  facebook: '#7d8ba3',
 }
 
 export default function ContentCard({ item, onOpen }: { item: ContentItem; onOpen?: (id: string) => void }) {
+  const color = PLATFORM_COLOR[item.platform] ?? '#9ca3af'
   return (
     <button
       type="button"
       onClick={() => onOpen?.(item.id)}
-      className="w-full text-left rounded-xl border border-gray-200 bg-white overflow-hidden hover:shadow-sm transition"
+      className="w-full text-left rounded-lg border border-gray-200 bg-white overflow-hidden hover:shadow-sm hover:border-gray-300 transition-all"
+      style={{ borderLeft: `3px solid ${color}` }}
     >
-      <div className="h-28 w-full" style={{ background: gradientFor(item.id) }} />
-      <div className="p-3">
-        <div className="flex items-center gap-2">
+      <div className="px-3.5 py-3">
+        <div className="text-sm font-medium text-gray-900 truncate">{item.title}</div>
+        <div className="mt-2 flex items-center gap-1.5 flex-wrap">
           <PlatformBadge platform={item.platform} />
+          <StatusBadge status={item.content_status} />
+          {item.publish_date && (
+            <span className="text-[11px] text-gray-400 ml-auto">{item.publish_date}</span>
+          )}
         </div>
-        <div className="mt-1.5 text-sm font-medium truncate">{item.title}</div>
-        <div className="mt-0.5 text-xs text-gray-400">{item.publish_date ?? '未排程'}</div>
       </div>
     </button>
   )

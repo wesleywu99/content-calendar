@@ -1,111 +1,93 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Asset, ContentItem, ContentStatus } from '@/lib/types'
+import type { ContentItem, ContentStatus } from '@/lib/types'
 import { nextStatuses, STATUS_LABEL } from '@/lib/domain/status'
-import { saveCaption, changeStatus, getAssets } from '@/app/(app)/actions'
+import { saveCaption, changeStatus } from '@/app/(app)/actions'
 import PlatformBadge from './PlatformBadge'
 import StatusBadge from './StatusBadge'
+
+function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-start gap-4 px-6 py-3 border-b border-gray-100">
+      <span className="w-20 shrink-0 text-xs text-gray-400 pt-0.5">{label}</span>
+      <div className="flex-1 min-w-0">{children}</div>
+    </div>
+  )
+}
 
 export default function ContentDrawer({ item, onClose }: { item: ContentItem; onClose: () => void }) {
   const router = useRouter()
   const [caption, setCaption] = useState(item.caption ?? '')
-  const [assets, setAssets] = useState<Asset[]>([])
-  const [regenerating, setRegenerating] = useState(false)
-
-  useEffect(() => {
-    getAssets(item.id).then(setAssets).catch(() => {})
-  }, [item.id])
-
   const next = nextStatuses(item.content_status)
-  const generating = regenerating || item.asset_status === 'generating'
-  const latest = assets[assets.length - 1]
-
-  const regenerate = async () => {
-    setRegenerating(true)
-    try {
-      await fetch('/api/flows/trigger', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ flowKey: 'image', contentId: item.id }),
-      })
-      const nextAssets = await getAssets(item.id).catch(() => assets)
-      setAssets(nextAssets)
-      router.refresh()
-    } finally {
-      setRegenerating(false)
-    }
-  }
 
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
-      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-black/30" />
-      <aside className="relative w-[420px] max-w-[90vw] bg-white h-full shadow-xl flex flex-col">
-        <div className="flex items-center justify-between px-5 h-14 border-b border-gray-200">
-          <div className="font-semibold">內容詳情</div>
-          <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600">✕</button>
+      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-black/20" />
+      <aside className="relative w-[400px] max-w-[90vw] bg-white h-full shadow-2xl flex flex-col border-l border-gray-200">
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 h-13 border-b border-gray-200 shrink-0" style={{ height: '52px' }}>
+          <span className="text-xs text-gray-400 font-medium tracking-wide uppercase">內容創意</span>
+          <button type="button" onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors text-lg">
+            ✕
+          </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
-          <div className="relative h-44 rounded-xl overflow-hidden bg-gray-100">
-            {generating ? (
-              <div className="absolute inset-0 grid place-items-center text-xs text-gray-500">
-                <span className="flex items-center gap-2">
-                  <span className="inline-block w-4 h-4 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
-                  圖片生成中
-                </span>
-              </div>
-            ) : latest ? (
-              <img src={latest.url} alt={item.title} className="w-full h-full object-cover" />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-            )}
-            <button
-              type="button"
-              onClick={regenerate}
-              disabled={regenerating}
-              className="absolute bottom-2 right-2 rounded-lg bg-white/80 backdrop-blur-sm px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-white disabled:opacity-50 transition-colors"
-            >
-              重新生成圖
-            </button>
-          </div>
+        {/* Title */}
+        <div className="px-6 pt-5 pb-4 border-b border-gray-100 shrink-0">
+          <h2 className="text-base font-semibold text-gray-900 leading-snug">{item.title}</h2>
+        </div>
 
-          <div className="flex items-center gap-2">
+        {/* Fields — Airtable style */}
+        <div className="flex-1 overflow-y-auto">
+          <FieldRow label="平台">
             <PlatformBadge platform={item.platform} />
+          </FieldRow>
+
+          <FieldRow label="狀態">
             <StatusBadge status={item.content_status} />
-            <span className="text-xs text-gray-400">{item.publish_date ?? '未排程'}</span>
-          </div>
+          </FieldRow>
 
-          <h2 className="text-lg font-semibold">{item.title}</h2>
+          <FieldRow label="發佈日期">
+            <span className="text-sm text-gray-700">{item.publish_date ?? '—'}</span>
+          </FieldRow>
 
-          <div>
-            <label className="text-xs text-gray-500">文案</label>
+          {item.insight_id && (
+            <FieldRow label="關聯洞察">
+              <span className="text-xs text-gray-500 break-all">{item.insight_id}</span>
+            </FieldRow>
+          )}
+
+          {/* Caption — full width textarea */}
+          <div className="px-6 py-4">
+            <div className="text-xs text-gray-400 mb-2">文案 / 創意備注</div>
             <textarea
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               onBlur={() => { void saveCaption(item.id, caption); router.refresh() }}
-              className="mt-1 w-full h-32 rounded-lg border border-gray-200 p-2 text-sm"
+              rows={6}
+              placeholder="輸入文案或創意想法…"
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-700 resize-none focus:outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300"
             />
           </div>
+        </div>
 
-          <div>
-            <div className="text-xs text-gray-500 mb-1">關聯洞察</div>
-            <div className="text-xs text-gray-400">{item.insight_id ?? '無'}</div>
+        {/* Footer actions */}
+        {next.length > 0 && (
+          <div className="border-t border-gray-200 px-6 py-4 flex gap-2 shrink-0">
+            {next.map((to: ContentStatus) => (
+              <button
+                key={to}
+                type="button"
+                onClick={() => { void changeStatus(item.id, item.content_status, to); router.refresh() }}
+                className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+              >
+                {STATUS_LABEL[to]}
+              </button>
+            ))}
           </div>
-        </div>
-
-        <div className="border-t border-gray-200 p-4 flex gap-2">
-          {next.map((to: ContentStatus) => (
-            <button
-              key={to}
-              type="button"
-              onClick={() => { void changeStatus(item.id, item.content_status, to); router.refresh() }}
-              className="flex-1 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
-            >
-              {STATUS_LABEL[to]}
-            </button>
-          ))}
-        </div>
+        )}
       </aside>
     </div>
   )
