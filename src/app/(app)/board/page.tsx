@@ -9,11 +9,11 @@ export default async function BoardPage() {
   const supabase = await createClient()
   const items = await listContent(supabase)
   return (
-    <>
+    <div className="flex flex-col h-full">
       <TopBar title="看板" />
-      <main className="p-6">
+      <main className="flex-1 overflow-auto p-8 bg-zinc-50">
         <Board items={items} />
       </main>
-    </>
+    </div>
   )
 }

@@ -1,14 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f8fa;
-  --foreground: #111827;
+  --background: #f9fafb;
+  --foreground: #18181b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand: #1e1f24;
   --color-xhs: #d98484;
   --color-ig: #c78599;
   --color-fb: #7d8ba3;

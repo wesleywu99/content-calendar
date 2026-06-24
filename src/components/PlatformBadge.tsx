@@ -7,14 +7,14 @@ const LABEL: Record<Platform, string> = {
 }
 
 const CLS: Record<Platform, string> = {
-  xiaohongshu: 'bg-xhs/10 text-xhs',
-  instagram: 'bg-ig/10 text-ig',
-  facebook: 'bg-fb/10 text-fb',
+  xiaohongshu: 'bg-rose-50 text-rose-600',
+  instagram: 'bg-pink-50 text-pink-600',
+  facebook: 'bg-blue-50 text-blue-600',
 }
 
 export default function PlatformBadge({ platform }: { platform: Platform }) {
   return (
-    <span className={`text-[10.5px] font-semibold px-2 py-0.5 rounded-full ${CLS[platform]}`}>
+    <span className={`inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-md tracking-wide ${CLS[platform]}`}>
       {LABEL[platform]}
     </span>
   )
