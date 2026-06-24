@@ -43,6 +43,18 @@ export async function POST(req: Request) {
           { onConflict: 'fingerprint', ignoreDuplicates: true },
         )
       }
+    } else if (flowKey === 'image' && contentId) {
+      await supabase.from('assets').upsert(
+        {
+          content_item_id: contentId,
+          type: 'image',
+          url: `https://placehold.co/600x600/6366f1/ffffff?text=mock+${Date.now()}`,
+          prompt: 'mock',
+          fingerprint: `${contentId}:image:${Date.now()}`,
+          generated_by: 'mock',
+        },
+      )
+      await supabase.from('content_items').update({ asset_status: 'ready' }).eq('id', contentId)
     }
   }
 

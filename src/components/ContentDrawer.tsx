@@ -11,14 +11,31 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
   const router = useRouter()
   const [caption, setCaption] = useState(item.caption ?? '')
   const [assets, setAssets] = useState<Asset[]>([])
+  const [regenerating, setRegenerating] = useState(false)
 
   useEffect(() => {
     getAssets(item.id).then(setAssets).catch(() => {})
   }, [item.id])
 
   const next = nextStatuses(item.content_status)
-  const generating = item.asset_status === 'generating'
+  const generating = regenerating || item.asset_status === 'generating'
   const latest = assets[assets.length - 1]
+
+  const regenerate = async () => {
+    setRegenerating(true)
+    try {
+      await fetch('/api/flows/trigger', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ flowKey: 'image', contentId: item.id }),
+      })
+      const nextAssets = await getAssets(item.id).catch(() => assets)
+      setAssets(nextAssets)
+      router.refresh()
+    } finally {
+      setRegenerating(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
@@ -43,6 +60,14 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
             ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-200 to-indigo-400" />
             )}
+            <button
+              type="button"
+              onClick={regenerate}
+              disabled={regenerating}
+              className="absolute bottom-2 right-2 rounded-lg bg-white/90 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-white disabled:opacity-50"
+            >
+              重新生成圖
+            </button>
           </div>
 
           <div className="flex items-center gap-2">
