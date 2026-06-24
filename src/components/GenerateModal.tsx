@@ -62,7 +62,7 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
                     key={p.key}
                     type="button"
                     onClick={() => toggle(p.key)}
-                    className={`px-3 py-1.5 rounded-full text-sm border ${on ? 'bg-brand text-white border-brand' : 'border-gray-200 text-gray-600'}`}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${on ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}
                   >
                     {p.label}
                   </button>
@@ -98,14 +98,14 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="mt-5 flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-600">
+          <button type="button" onClick={onClose} className="rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
             取消
           </button>
           <button
             type="button"
             onClick={confirm}
             disabled={status === 'generating' || selected.length === 0 || !topic}
-            className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50 disabled:hover:bg-gray-900 transition-colors"
           >
             {status === 'generating' ? '生成中…' : status === 'done' ? '已送出 ✓' : '確認生成'}
           </button>
@@ -113,7 +113,7 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
 
         {status === 'generating' && (
           <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
-            <span className="inline-block w-3 h-3 rounded-full border-2 border-brand border-t-transparent animate-spin" />
+            <span className="inline-block w-3 h-3 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
             正在生成草稿…
           </div>
         )}

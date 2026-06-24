@@ -9,7 +9,7 @@ export default function GenerateButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white"
+        className="rounded-lg bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
       >
         生成內容
       </button>

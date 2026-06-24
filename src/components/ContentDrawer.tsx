@@ -51,20 +51,20 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
             {generating ? (
               <div className="absolute inset-0 grid place-items-center text-xs text-gray-500">
                 <span className="flex items-center gap-2">
-                  <span className="inline-block w-4 h-4 rounded-full border-2 border-brand border-t-transparent animate-spin" />
+                  <span className="inline-block w-4 h-4 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
                   圖片生成中
                 </span>
               </div>
             ) : latest ? (
               <img src={latest.url} alt={item.title} className="w-full h-full object-cover" />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-200 to-indigo-400" />
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
             )}
             <button
               type="button"
               onClick={regenerate}
               disabled={regenerating}
-              className="absolute bottom-2 right-2 rounded-lg bg-white/90 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-white disabled:opacity-50"
+              className="absolute bottom-2 right-2 rounded-lg bg-white/80 backdrop-blur-sm px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-white disabled:opacity-50 transition-colors"
             >
               重新生成圖
             </button>
@@ -100,7 +100,7 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
               key={to}
               type="button"
               onClick={() => { void changeStatus(item.id, item.content_status, to); router.refresh() }}
-              className="flex-1 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white"
+              className="flex-1 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
             >
               {STATUS_LABEL[to]}
             </button>

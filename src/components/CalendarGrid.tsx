@@ -36,7 +36,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
             type="button"
             aria-label="上一月"
             onClick={() => onMonthChange(addMonths(month, -1))}
-            className="h-7 w-7 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50"
+            className="h-7 w-7 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors"
           >
             ‹
           </button>
@@ -44,7 +44,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
             type="button"
             aria-label="今天"
             onClick={() => onMonthChange(new Date())}
-            className="h-7 rounded-md border border-gray-200 px-2 text-xs text-gray-600 hover:bg-gray-50"
+            className="h-7 rounded-md border border-gray-200 px-2 text-xs text-gray-600 hover:bg-gray-50 transition-colors"
           >
             今天
           </button>
@@ -52,7 +52,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
             type="button"
             aria-label="下一月"
             onClick={() => onMonthChange(addMonths(month, 1))}
-            className="h-7 w-7 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50"
+            className="h-7 w-7 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors"
           >
             ›
           </button>

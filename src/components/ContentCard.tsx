@@ -5,7 +5,7 @@ import PlatformBadge from './PlatformBadge'
 function gradientFor(id: string) {
   let h = 0
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 360
-  return `linear-gradient(135deg, hsl(${h} 70% 68%), hsl(${(h + 40) % 360} 65% 52%))`
+  return `linear-gradient(135deg, hsl(${h} 15% 91%), hsl(${(h + 40) % 360} 12% 83%))`
 }
 
 export default function ContentCard({ item, onOpen }: { item: ContentItem; onOpen?: (id: string) => void }) {
