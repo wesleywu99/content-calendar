@@ -16,27 +16,23 @@ export default function Board({ items }: { items: ContentItem[] }) {
 
   return (
     <>
-      <div className="flex gap-5 items-start h-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {COLUMNS.map((col) => {
           const colItems = items.filter((it) => it.content_status === col.key)
           return (
-            <div key={col.key} className="w-72 shrink-0 flex flex-col">
-              <div className="flex items-center gap-2 mb-3 px-0.5">
+            <div key={col.key} className="space-y-3">
+              <div className="flex items-center gap-2 px-1">
                 <span className="text-sm font-medium text-zinc-700">{col.label}</span>
-                <span className="text-xs font-medium text-zinc-400 bg-zinc-200/60 px-1.5 py-0.5 rounded-full">
-                  {colItems.length}
-                </span>
+                <span className="text-xs font-medium text-zinc-500 bg-zinc-100 rounded-full px-2 py-0.5">{colItems.length}</span>
               </div>
-              <div className="space-y-2.5">
-                {colItems.map((it) => (
-                  <ContentCard key={it.id} item={it} onOpen={setOpenId} />
-                ))}
-                {colItems.length === 0 && (
-                  <div className="rounded-xl border border-dashed border-zinc-200 py-8 text-center text-xs text-zinc-300 bg-white/50">
-                    沒有項目
-                  </div>
-                )}
-              </div>
+              {colItems.map((it) => (
+                <ContentCard key={it.id} item={it} onOpen={setOpenId} />
+              ))}
+              {colItems.length === 0 && (
+                <div className="rounded-xl border border-dashed border-zinc-200 p-8 text-center text-xs text-zinc-400">
+                  沒有項目
+                </div>
+              )}
             </div>
           )
         })}

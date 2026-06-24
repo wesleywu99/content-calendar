@@ -1,17 +1,14 @@
 'use client'
-import { startOfMonth, startOfWeek, addDays, addMonths, format, isSameMonth, isToday } from 'date-fns'
+import { startOfMonth, startOfWeek, addDays, addMonths, format, isSameMonth } from 'date-fns'
 import type { ContentItem } from '@/lib/types'
 
 const WEEKDAYS = ['一', '二', '三', '四', '五', '六', '日']
 
-// Pure color blocks — no border, high contrast bg+text
-const PLATFORM_CHIP: Record<string, { bg: string; text: string }> = {
-  xiaohongshu: { bg: '#fff1f2', text: '#e11d48' },
-  instagram:   { bg: '#fdf2f8', text: '#db2777' },
-  facebook:    { bg: '#eff6ff', text: '#2563eb' },
+const PLATFORM_CHIP: Record<string, string> = {
+  xiaohongshu: 'bg-rose-50 text-rose-700 hover:bg-rose-100',
+  instagram: 'bg-violet-50 text-violet-700 hover:bg-violet-100',
+  facebook: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
 }
-
-const MAX_VISIBLE = 3
 
 interface Props {
   month: Date
@@ -24,6 +21,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
   const monthStart = startOfMonth(month)
   const gridStart = startOfWeek(monthStart, { weekStartsOn: 1 })
   const days = Array.from({ length: 42 }, (_, i) => addDays(gridStart, i))
+  const todayKey = format(new Date(), 'yyyy-MM-dd')
 
   const itemsFor = (d: Date) => {
     const key = format(d, 'yyyy-MM-dd')
@@ -31,16 +29,15 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
   }
 
   return (
-    <div className="w-full bg-white rounded-2xl ring-1 ring-zinc-200/60 shadow-sm overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200/60 bg-white shrink-0">
-        <div className="text-sm font-semibold text-zinc-800">{format(month, 'yyyy 年 M 月')}</div>
+    <div className="rounded-xl bg-white shadow-sm ring-1 ring-zinc-900/5 overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="text-base font-semibold tracking-tight text-zinc-900">{format(month, 'yyyy 年 M 月')}</div>
         <div className="flex items-center gap-1">
           <button
             type="button"
             aria-label="上一月"
             onClick={() => onMonthChange(addMonths(month, -1))}
-            className="h-7 w-7 rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors duration-150 flex items-center justify-center text-lg leading-none"
+            className="h-8 w-8 rounded-lg text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors flex items-center justify-center"
           >
             ‹
           </button>
@@ -48,7 +45,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
             type="button"
             aria-label="今天"
             onClick={() => onMonthChange(new Date())}
-            className="h-7 px-2.5 rounded-md text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 transition-colors duration-150"
+            className="h-8 rounded-lg px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition-colors"
           >
             今天
           </button>
@@ -56,77 +53,45 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
             type="button"
             aria-label="下一月"
             onClick={() => onMonthChange(addMonths(month, 1))}
-            className="h-7 w-7 rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors duration-150 flex items-center justify-center text-lg leading-none"
+            className="h-8 w-8 rounded-lg text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors flex items-center justify-center"
           >
             ›
           </button>
         </div>
       </div>
 
-      {/* Weekday labels */}
-      <div className="grid grid-cols-7 bg-zinc-50/80 border-b border-zinc-200/60 shrink-0">
+      <div className="grid grid-cols-7 border-t border-zinc-100">
         {WEEKDAYS.map((w) => (
-          <div key={w} className="py-2.5 text-center text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
-            {w}
-          </div>
+          <div key={w} className="px-3 py-2 text-xs font-medium text-zinc-400">週{w}</div>
         ))}
       </div>
 
-      {/* Days — gap-px with zinc-100 background for clean 1px grid lines */}
-      <div className="flex-1 grid grid-cols-7 gap-px bg-zinc-100">
+      <div className="grid grid-cols-7 border-t border-zinc-100">
         {days.map((d) => {
           const inMonth = isSameMonth(d, month)
-          const today = isToday(d)
+          const isToday = format(d, 'yyyy-MM-dd') === todayKey
           const dayItems = itemsFor(d)
-          const visible = dayItems.slice(0, MAX_VISIBLE)
-          const overflow = dayItems.length - MAX_VISIBLE
-
           return (
             <div
               key={format(d, 'yyyy-MM-dd')}
-              className={`min-h-[100px] p-1.5 flex flex-col gap-1 transition-colors duration-100 ${
-                !inMonth
-                  ? 'bg-zinc-50/50'
-                  : today
-                  ? 'bg-blue-50/40'
-                  : 'bg-white hover:bg-zinc-50/50'
-              }`}
+              className={`min-h-[104px] p-2 border-b border-r border-zinc-100 ${inMonth ? '' : 'bg-zinc-50/50'}`}
             >
-              {/* Date number — left aligned */}
-              <div className="pl-1 pt-0.5">
-                {today ? (
-                  <span className="w-6 h-6 rounded-full bg-zinc-900 text-white text-[11px] font-semibold flex items-center justify-center">
-                    {format(d, 'd')}
-                  </span>
-                ) : (
-                  <span className={`text-xs font-medium ${inMonth ? 'text-zinc-500' : 'text-zinc-300'}`}>
-                    {format(d, 'd')}
-                  </span>
-                )}
+              <div className="flex items-center justify-center">
+                <span className={`text-xs w-6 h-6 flex items-center justify-center rounded-full transition-colors ${isToday ? 'bg-zinc-900 text-white font-medium' : inMonth ? 'text-zinc-600' : 'text-zinc-300'}`}>
+                  {format(d, 'd')}
+                </span>
               </div>
-
-              {/* Event chips — no border, pure color blocks */}
-              <div className="space-y-0.5">
-                {visible.map((it) => {
-                  const chip = PLATFORM_CHIP[it.platform]
-                  return (
-                    <button
-                      key={it.id}
-                      type="button"
-                      onClick={() => onOpen(it.id)}
-                      className="w-full text-left rounded-md px-2 py-1 text-[11px] font-medium truncate cursor-pointer transition-opacity duration-100 hover:opacity-70 active:opacity-50"
-                      style={{
-                        background: chip?.bg ?? '#f4f4f5',
-                        color: chip?.text ?? '#52525b',
-                      }}
-                    >
-                      {it.title}
-                    </button>
-                  )
-                })}
-                {overflow > 0 && (
-                  <div className="text-[10px] text-zinc-400 px-2 py-0.5">+{overflow} 個</div>
-                )}
+              <div className="mt-1 space-y-1">
+                {dayItems.map((it) => (
+                  <button
+                    key={it.id}
+                    type="button"
+                    onClick={() => onOpen(it.id)}
+                    className={`w-full text-left rounded-md px-2 py-1 text-[11px] font-medium truncate transition-colors ${PLATFORM_CHIP[it.platform] ?? 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'}`}
+                  >
+                    {it.title}
+                  </button>
+                ))}
               </div>
             </div>
           )

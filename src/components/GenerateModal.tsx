@@ -44,16 +44,18 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-black/30" />
-      <div className="relative w-[440px] max-w-[92vw] rounded-2xl bg-white shadow-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold">新增創意</h2>
-          <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600">✕</button>
+      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[1px]" />
+      <div className="relative w-[460px] max-w-[92vw] rounded-2xl bg-white shadow-2xl p-7">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold tracking-tight text-zinc-900">新增內容構想</h2>
+          <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 transition-colors">
+            ✕
+          </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div>
-            <div className="text-xs text-gray-500 mb-1.5">平台（可多選）</div>
+            <label className="block text-xs font-medium text-zinc-500 mb-2">平台</label>
             <div className="flex gap-2">
               {PLATFORMS.map((p) => {
                 const on = selected.includes(p.key)
@@ -62,7 +64,7 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
                     key={p.key}
                     type="button"
                     onClick={() => toggle(p.key)}
-                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${on ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97] ${on ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'}`}
                   >
                     {p.label}
                   </button>
@@ -72,49 +74,49 @@ export default function GenerateModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <div className="text-xs text-gray-500 mb-1.5">主題</div>
+            <label className="block text-xs font-medium text-zinc-500 mb-2">主題</label>
             <input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="例如：端午節限定口味"
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition-all"
             />
           </div>
 
           <div>
-            <div className="text-xs text-gray-500 mb-1.5">發佈日期</div>
+            <label className="block text-xs font-medium text-zinc-500 mb-2">發佈日期</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-400 transition-all"
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-            <span className="text-xs text-gray-500">預估費用</span>
-            <span className="text-sm font-semibold">{cost}</span>
+          <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3">
+            <span className="text-sm text-zinc-500">預估費用</span>
+            <span className="text-sm font-semibold text-zinc-900">{cost}</span>
           </div>
         </div>
 
-        <div className="mt-5 flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+        <div className="mt-6 flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition-colors">
             取消
           </button>
           <button
             type="button"
             onClick={confirm}
             disabled={status === 'generating' || selected.length === 0 || !topic}
-            className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50 disabled:hover:bg-gray-900 transition-colors"
+            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 active:scale-[0.98] disabled:opacity-40 disabled:hover:bg-zinc-900 transition-all"
           >
-            {status === 'generating' ? '建立中…' : status === 'done' ? '已建立 ✓' : '建立創意草稿'}
+            {status === 'generating' ? '生成中…' : status === 'done' ? '已送出 ✓' : '確認生成'}
           </button>
         </div>
 
         {status === 'generating' && (
-          <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
-            <span className="inline-block w-3 h-3 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
-            正在建立創意草稿…
+          <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500">
+            <span className="inline-block w-3 h-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
+            正在生成草稿…
           </div>
         )}
         {status === 'error' && <div className="mt-3 text-xs text-red-500">生成失敗，請重試。</div>}

@@ -17,7 +17,7 @@ export default function DashboardView({ items }: { items: ContentItem[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-8">
         <div className="lg:col-span-2">
           <CalendarGrid month={month} items={items} onMonthChange={setMonth} onOpen={setOpenId} />
         </div>

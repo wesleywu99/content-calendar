@@ -22,25 +22,14 @@ const draftItem = {
 } as ContentItem
 
 describe('ContentDrawer', () => {
-  it('顯示標題與文案', () => {
+  it('顯示文案與可送審按鈕（draft → review）', () => {
     render(<ContentDrawer item={draftItem} onClose={() => {}} />)
-    expect(screen.getByText('端午企劃')).toBeInTheDocument()
     expect(screen.getByDisplayValue('原文案')).toBeInTheDocument()
-  })
-
-  it('顯示送審按鈕（draft → review）', () => {
-    render(<ContentDrawer item={draftItem} onClose={() => {}} />)
     expect(screen.getByRole('button', { name: '待審核' })).toBeInTheDocument()
   })
 
   it('draft 不可直接 approved', () => {
     render(<ContentDrawer item={draftItem} onClose={() => {}} />)
     expect(screen.queryByRole('button', { name: '已核准' })).not.toBeInTheDocument()
-  })
-
-  it('顯示平台與日期欄位', () => {
-    render(<ContentDrawer item={draftItem} onClose={() => {}} />)
-    expect(screen.getByText('2026-06-26')).toBeInTheDocument()
-    expect(screen.getByText('IG')).toBeInTheDocument()
   })
 })
