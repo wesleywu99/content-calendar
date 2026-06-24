@@ -20,7 +20,7 @@ export interface ContentItem {
 }
 export interface Asset {
   id: string; content_item_id: string; type: 'image' | 'video'
-  url: string; prompt: string | null; fingerprint: string; created_at: string
+  url: string; prompt: string | null; fingerprint: string; meta: Record<string, unknown>; created_at: string
 }
 export interface FlowRun {
   id: string; flow_key: string; triggered_by: string; cost: number | null
