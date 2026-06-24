@@ -1,17 +1,17 @@
 import { createClient } from '@/lib/supabase/server'
 import { listContent } from '@/lib/repo/content'
 import TopBar from '@/components/TopBar'
-import DashboardView from '@/components/DashboardView'
+import CalendarView from '@/components/CalendarView'
 
 export const dynamic = 'force-dynamic'
 
-export default async function DashboardPage() {
+export default async function HomePage() {
   const supabase = await createClient()
   const items = await listContent(supabase)
   return (
     <>
-      <TopBar title="儀表板" />
-      <DashboardView items={items} />
+      <TopBar title="月曆" />
+      <CalendarView items={items} />
     </>
   )
 }

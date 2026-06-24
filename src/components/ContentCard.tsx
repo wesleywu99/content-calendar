@@ -15,7 +15,7 @@ export default function ContentCard({ item, onOpen }: { item: ContentItem; onOpe
     <button
       type="button"
       onClick={() => onOpen?.(item.id)}
-      className="w-full text-left rounded-lg border border-gray-200 bg-white overflow-hidden hover:shadow-sm hover:border-gray-300 transition-all"
+      className="w-full text-left rounded-lg border border-gray-200 bg-white overflow-hidden cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md hover:border-gray-300 active:translate-y-0 active:shadow-sm"
       style={{ borderLeft: `3px solid ${color}` }}
     >
       <div className="px-3.5 py-3">

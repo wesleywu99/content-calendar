@@ -1,11 +1,13 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ContentItem, ContentStatus } from '@/lib/types'
 import { nextStatuses, STATUS_LABEL } from '@/lib/domain/status'
 import { saveCaption, changeStatus } from '@/app/(app)/actions'
 import PlatformBadge from './PlatformBadge'
 import StatusBadge from './StatusBadge'
+
+const ANIM_MS = 220
 
 function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -19,17 +21,47 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
 export default function ContentDrawer({ item, onClose }: { item: ContentItem; onClose: () => void }) {
   const router = useRouter()
   const [caption, setCaption] = useState(item.caption ?? '')
+  const [visible, setVisible] = useState(false)
   const next = nextStatuses(item.content_status)
+
+  // mount → trigger enter animation on next frame
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisible(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
+
+  const handleClose = useCallback(() => {
+    setVisible(false)
+    setTimeout(onClose, ANIM_MS)
+  }, [onClose])
 
   return (
     <div className="fixed inset-0 z-40 flex justify-end">
-      <button type="button" aria-label="關閉" onClick={onClose} className="absolute inset-0 bg-black/20" />
-      <aside className="relative w-[400px] max-w-[90vw] bg-white h-full shadow-2xl flex flex-col border-l border-gray-200">
+      {/* Backdrop — fades in/out */}
+      <button
+        type="button"
+        aria-label="關閉"
+        onClick={handleClose}
+        className="absolute inset-0 transition-opacity duration-200 cursor-default"
+        style={{ background: 'rgba(0,0,0,0.18)', opacity: visible ? 1 : 0 }}
+      />
 
+      {/* Panel — slides in from right */}
+      <aside
+        className="relative w-[400px] max-w-[90vw] bg-white h-full shadow-2xl flex flex-col border-l border-gray-200 transition-transform ease-out"
+        style={{
+          transitionDuration: `${ANIM_MS}ms`,
+          transform: visible ? 'translateX(0)' : 'translateX(100%)',
+        }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 h-13 border-b border-gray-200 shrink-0" style={{ height: '52px' }}>
-          <span className="text-xs text-gray-400 font-medium tracking-wide uppercase">內容創意</span>
-          <button type="button" onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors text-lg">
+        <div className="flex items-center justify-between px-6 border-b border-gray-200 shrink-0" style={{ height: '52px' }}>
+          <span className="text-xs text-gray-400 font-medium tracking-widest uppercase">內容創意</span>
+          <button
+            type="button"
+            onClick={handleClose}
+            className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-150 text-base leading-none"
+          >
             ✕
           </button>
         </div>
@@ -39,7 +71,7 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
           <h2 className="text-base font-semibold text-gray-900 leading-snug">{item.title}</h2>
         </div>
 
-        {/* Fields — Airtable style */}
+        {/* Fields — Airtable / Notion style */}
         <div className="flex-1 overflow-y-auto">
           <FieldRow label="平台">
             <PlatformBadge platform={item.platform} />
@@ -59,7 +91,6 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
             </FieldRow>
           )}
 
-          {/* Caption — full width textarea */}
           <div className="px-6 py-4">
             <div className="text-xs text-gray-400 mb-2">文案 / 創意備注</div>
             <textarea
@@ -68,7 +99,7 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
               onBlur={() => { void saveCaption(item.id, caption); router.refresh() }}
               rows={6}
               placeholder="輸入文案或創意想法…"
-              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-700 resize-none focus:outline-none focus:border-gray-400 transition-colors placeholder:text-gray-300"
+              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-700 resize-none focus:outline-none focus:border-gray-400 transition-colors duration-150 placeholder:text-gray-300"
             />
           </div>
         </div>
@@ -81,7 +112,7 @@ export default function ContentDrawer({ item, onClose }: { item: ContentItem; on
                 key={to}
                 type="button"
                 onClick={() => { void changeStatus(item.id, item.content_status, to); router.refresh() }}
-                className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors duration-150"
               >
                 {STATUS_LABEL[to]}
               </button>

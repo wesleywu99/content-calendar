@@ -107,7 +107,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
                       key={it.id}
                       type="button"
                       onClick={() => onOpen(it.id)}
-                      className="w-full text-left rounded px-1.5 py-0.5 text-[11px] truncate hover:brightness-95 transition-all"
+                      className="w-full text-left rounded px-1.5 py-0.5 text-[11px] truncate cursor-pointer transition-all duration-100 hover:opacity-75 active:opacity-60"
                       style={{
                         background: `${color}18`,
                         borderLeft: `2px solid ${color}`,
