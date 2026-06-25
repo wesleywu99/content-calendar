@@ -8,9 +8,9 @@ import GenerateModal from './GenerateModal'
 describe('GenerateModal', () => {
   it('選平台即時更新費用', () => {
     render(<GenerateModal onClose={() => {}} />)
-    fireEvent.click(screen.getByText('IG'))
+    fireEvent.click(screen.getByText('Instagram'))
     expect(screen.getByText('$8')).toBeInTheDocument()
-    fireEvent.click(screen.getByText('FB'))
+    fireEvent.click(screen.getByText('Facebook'))
     expect(screen.getByText('$16')).toBeInTheDocument()
   })
 })

@@ -1,15 +1,7 @@
 'use client'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import GenerateButton from './GenerateButton'
 
-const NAV = [
-  { href: '/', label: 'Calendar', icon: 'calendar_month' },
-  { href: '/board', label: 'Board', icon: 'view_kanban' },
-]
-
 export default function Sidebar() {
-  const pathname = usePathname()
   return (
     <aside className="w-64 shrink-0 h-screen fixed left-0 top-0 flex flex-col py-6 px-4 bg-surface z-50">
       {/* Logo */}
@@ -19,34 +11,8 @@ export default function Sidebar() {
         </h1>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1">
-        {NAV.map((item) => {
-          const active =
-            item.href === '/board'
-              ? pathname === '/board'
-              : pathname === '/' || pathname.startsWith('/calendar')
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${
-                active
-                  ? 'text-primary font-bold border-r-2 border-primary bg-surface-container-low'
-                  : 'text-on-surface-variant hover:bg-surface-container-low'
-              }`}
-            >
-              <span
-                className="material-symbols-outlined"
-                style={active ? { fontVariationSettings: "'FILL' 1" } : undefined}
-              >
-                {item.icon}
-              </span>
-              <span className="text-[15px]">{item.label}</span>
-            </Link>
-          )
-        })}
-      </nav>
+      {/* Spacer — reserved for future macro navigation */}
+      <div className="flex-1" />
 
       {/* Bottom section */}
       <div className="mt-auto pt-4 space-y-3">

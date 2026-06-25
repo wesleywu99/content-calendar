@@ -1,4 +1,4 @@
-import CalendarView from '@/components/CalendarView'
+import ContentWorkspace from '@/components/ContentWorkspace'
 import { MOCK_ITEMS } from '@/lib/mock-data'
 
 export const dynamic = 'force-dynamic'
@@ -15,9 +15,5 @@ export default async function DashboardPage() {
   } catch {
     // Fall back to mock data
   }
-  return (
-    <>
-      <CalendarView items={items} />
-    </>
-  )
+  return <ContentWorkspace items={items} />
 }

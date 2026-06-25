@@ -5,6 +5,6 @@ import PlatformBadge from './PlatformBadge'
 describe('PlatformBadge', () => {
   it('顯示平台標籤', () => {
     render(<PlatformBadge platform="instagram" />)
-    expect(screen.getByText('IG')).toBeInTheDocument()
+    expect(screen.getByText('Instagram')).toBeInTheDocument()
   })
 })

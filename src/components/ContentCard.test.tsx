@@ -15,6 +15,6 @@ describe('ContentCard', () => {
   it('顯示標題與日期', () => {
     render(<ContentCard item={item} />)
     expect(screen.getByText('端午企劃')).toBeInTheDocument()
-    expect(screen.getByText('06-26')).toBeInTheDocument()
+    expect(screen.getByText('Jun 26')).toBeInTheDocument()
   })
 })

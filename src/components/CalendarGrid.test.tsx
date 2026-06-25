@@ -13,7 +13,7 @@ describe('CalendarGrid', () => {
   it('點下一月觸發 onMonthChange', () => {
     const fn = vi.fn()
     render(<CalendarGrid month={new Date(2026, 5, 1)} items={[]} onMonthChange={fn} onOpen={() => {}} />)
-    fireEvent.click(screen.getByLabelText('下一月'))
+    fireEvent.click(screen.getByLabelText('Next month'))
     expect(fn).toHaveBeenCalled()
   })
 })

@@ -17,10 +17,10 @@ const PLATFORM_META: Record<Platform, { dot: string; label: string }> = {
 }
 
 const STATUS_CHIP: Record<ContentStatus, string> = {
-  idea: 'text-on-surface-variant bg-surface-container',
-  draft: 'text-on-surface-variant bg-surface-container',
-  review: 'text-orange-600 bg-orange-50',
-  approved: 'text-green-600 bg-green-50',
+  idea: 'text-slate-600 bg-slate-100',
+  draft: 'text-zinc-700 bg-zinc-200',
+  review: 'text-amber-800 bg-amber-100',
+  approved: 'text-emerald-700 bg-emerald-100',
 }
 
 const MAX_VISIBLE = 3
@@ -30,6 +30,7 @@ interface Props {
   items: ContentItem[]
   onMonthChange: (d: Date) => void
   onOpen: (id: string) => void
+  onCreateDate?: (date: string) => void
 }
 
 // ---------- Mini Month Picker ----------
@@ -104,7 +105,7 @@ function MonthPicker({
 }
 
 // ---------- Main CalendarGrid ----------
-export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Props) {
+export default function CalendarGrid({ month, items, onMonthChange, onOpen, onCreateDate }: Props) {
   const [activePlatforms, setActivePlatforms] = useState<Platform[]>([
     'xiaohongshu', 'instagram', 'facebook',
   ])
@@ -224,20 +225,36 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
       {/* Calendar grid — rounded container with generous padding */}
       <div className="flex-1 overflow-y-auto custom-scrollbar px-8 pb-8">
         <div className="calendar-grid shadow-card">
-          {days.map((d) => {
+          {days.map((d, i) => {
             const inMonth = isSameMonth(d, month)
             const isToday = format(d, 'yyyy-MM-dd') === todayKey
+            const isWeekend = i % 7 >= 5
+            const dateStr = format(d, 'yyyy-MM-dd')
             const dayItems = itemsFor(d)
             const visible = dayItems.slice(0, MAX_VISIBLE)
             const hiddenCount = dayItems.length - MAX_VISIBLE
 
             return (
               <div
-                key={format(d, 'yyyy-MM-dd')}
-                className={`calendar-cell p-3 ${
+                key={dateStr}
+                className={`calendar-cell group relative p-2.5 cursor-pointer ${
                   inMonth ? '' : 'text-on-surface-variant/30'
-                } ${isToday ? 'bg-primary/[0.03]' : ''}`}
+                } ${isToday ? 'bg-primary/[0.03]' : ''} ${
+                  isWeekend && inMonth ? 'bg-surface-dim/20' : ''
+                }`}
+                onClick={() => onCreateDate?.(dateStr)}
               >
+                {/* Hover + button */}
+                {inMonth && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onCreateDate?.(dateStr) }}
+                    className="absolute top-1 right-1 w-6 h-6 rounded-full bg-surface-container-low text-on-surface-variant opacity-0 group-hover:opacity-100 hover:bg-primary hover:text-white transition-all flex items-center justify-center"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">add</span>
+                  </button>
+                )}
+
                 {/* Day number */}
                 <div className="flex items-center gap-1.5">
                   {isToday ? (
@@ -252,34 +269,27 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen }: Pr
                 </div>
 
                 {/* Event chips */}
-                <div className="mt-2 space-y-1.5">
+                <div className="mt-1.5 space-y-1">
                   {visible.map((it) => {
                     const meta = PLATFORM_META[it.platform]
                     return (
                       <button
                         key={it.id}
                         type="button"
-                        onClick={() => onOpen(it.id)}
-                        className={`w-full text-left p-2 rounded-lg bg-white shadow-sm hover:shadow-md transition-all cursor-pointer ${
-                          isToday ? 'ring-1 ring-primary/10' : ''
-                        } ${it.content_status === 'review' ? 'border-l-[3px] border-l-primary/40' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); onOpen(it.id) }}
+                        className={`w-full text-left p-1.5 rounded-md bg-white shadow-sm hover:shadow-md transition-all cursor-pointer ${
+                          it.content_status === 'review' ? 'border-l-[3px] border-l-primary/40' : ''
+                        }`}
                       >
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                          <span className={`w-1.5 h-1.5 rounded-full ${meta?.dot ?? 'bg-outline'}`} />
-                          <span className="label-caps text-[9px] uppercase text-on-surface-variant/60">
-                            {meta?.label ?? it.platform}
-                          </span>
+                        <div className="flex items-center gap-1 mb-0.5">
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${meta?.dot ?? 'bg-outline'}`} />
+                          <p className="text-[11px] font-medium leading-tight line-clamp-1 text-on-surface">
+                            {it.title}
+                          </p>
                         </div>
-                        <p className={`text-[11px] font-medium leading-tight line-clamp-1 ${
-                          isToday ? 'text-primary font-semibold' : 'text-on-surface'
-                        }`}>
-                          {it.title}
-                        </p>
-                        <div className="flex justify-between items-center mt-1">
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${STATUS_CHIP[it.content_status]}`}>
-                            {STATUS_LABEL[it.content_status]}
-                          </span>
-                        </div>
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${STATUS_CHIP[it.content_status]}`}>
+                          {STATUS_LABEL[it.content_status]}
+                        </span>
                       </button>
                     )
                   })}
