@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation'
 import GenerateButton from './GenerateButton'
 
 const NAV = [
-  { href: '/', label: 'Dashboard', icon: 'dashboard' },
   { href: '/', label: 'Calendar', icon: 'calendar_month' },
   { href: '/board', label: 'Board', icon: 'view_kanban' },
 ]
@@ -16,7 +15,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="mb-10 px-2">
         <h1 className="text-[32px] font-semibold tracking-[-0.03em] leading-[1.2] text-on-surface">
-          ContentFlow
+          Content Calendar
         </h1>
         <p className="label-caps text-on-surface-variant uppercase mt-1">SaaS Platform</p>
       </div>
