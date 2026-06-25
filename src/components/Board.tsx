@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { ContentItem, ContentStatus } from '@/lib/types'
 import ContentCard from './ContentCard'
 import ContentDrawer from './ContentDrawer'
+import { ViewToggle } from './WorkspaceContext'
 
 const COLUMN_DOTS: Record<string, string> = {
   idea: 'bg-outline',
@@ -24,7 +25,15 @@ export default function Board({ items }: { items: ContentItem[] }) {
 
   return (
     <>
-      {/* Kanban Board Container (Stitch mockup) */}
+      {/* Board header with view toggle */}
+      <div className="px-8 py-3 flex items-center justify-between shrink-0">
+        <div>
+          <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-on-surface">Content Board</h2>
+        </div>
+        <ViewToggle />
+      </div>
+
+      {/* Kanban Board Container */}
       <div className="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar px-10 pb-10">
         <div className="flex h-full gap-5">
           {COLUMNS.map((col) => {

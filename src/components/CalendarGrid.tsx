@@ -7,6 +7,7 @@ import {
 import type { ContentItem, Platform } from '@/lib/types'
 import { STATUS_LABEL } from '@/lib/domain/status'
 import type { ContentStatus } from '@/lib/types'
+import { useWorkspace, ViewToggle } from './WorkspaceContext'
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
@@ -106,18 +107,13 @@ function MonthPicker({
 
 // ---------- Main CalendarGrid ----------
 export default function CalendarGrid({ month, items, onMonthChange, onOpen, onCreateDate }: Props) {
-  const [activePlatforms, setActivePlatforms] = useState<Platform[]>([
-    'xiaohongshu', 'instagram', 'facebook',
-  ])
+  const { activePlatforms } = useWorkspace()
   const [pickerOpen, setPickerOpen] = useState(false)
 
   const monthStart = startOfMonth(month)
   const gridStart = startOfWeek(monthStart, { weekStartsOn: 1 })
   const days = Array.from({ length: 42 }, (_, i) => addDays(gridStart, i))
   const todayKey = format(new Date(), 'yyyy-MM-dd')
-
-  const togglePlatform = (p: Platform) =>
-    setActivePlatforms((cur) => (cur.includes(p) ? cur.filter((x) => x !== p) : [...cur, p]))
 
   const itemsFor = (d: Date) => {
     const key = format(d, 'yyyy-MM-dd')
@@ -126,8 +122,8 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen, onCr
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header bar — no bottom border, clean and airy */}
-      <div className="px-8 py-4 bg-surface flex items-center justify-between shrink-0">
+      {/* Header bar */}
+      <div className="px-8 py-3 bg-surface flex items-center justify-between shrink-0">
         <div className="flex items-center gap-5">
           {/* Clickable month title */}
           <div className="relative">
@@ -171,7 +167,7 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen, onCr
             </button>
           </div>
 
-          {/* Today button — blue accent */}
+          {/* Today button */}
           <button
             type="button"
             onClick={() => onMonthChange(new Date())}
@@ -181,31 +177,8 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen, onCr
           </button>
         </div>
 
-        {/* Platform filter */}
-        <div className="flex items-center gap-3">
-          <span className="label-caps text-xs text-on-surface-variant/60">Filter</span>
-          <div className="flex bg-surface-container-low rounded-full p-1">
-            {(Object.keys(PLATFORM_META) as Platform[]).map((p) => {
-              const on = activePlatforms.includes(p)
-              const meta = PLATFORM_META[p]
-              return (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => togglePlatform(p)}
-                  className={`px-3 py-1.5 text-[11px] rounded-full transition-all flex items-center gap-1.5 ${
-                    on
-                      ? 'bg-white shadow-sm'
-                      : 'text-on-surface-variant/60 hover:text-on-surface-variant'
-                  }`}
-                >
-                  <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
-                  {meta.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+        {/* View toggle */}
+        <ViewToggle />
       </div>
 
       {/* Day labels — no border, just floating text */}
@@ -277,8 +250,8 @@ export default function CalendarGrid({ month, items, onMonthChange, onOpen, onCr
                         key={it.id}
                         type="button"
                         onClick={(e) => { e.stopPropagation(); onOpen(it.id) }}
-                        className={`w-full text-left p-1.5 rounded-md bg-white shadow-sm hover:shadow-md transition-all cursor-pointer ${
-                          it.content_status === 'review' ? 'border-l-[3px] border-l-primary/40' : ''
+                        className={`w-full text-left p-2 rounded-lg bg-white border border-outline-variant/40 shadow-sm hover:shadow-md hover:border-primary/40 transition-all cursor-pointer ${
+                          it.content_status === 'review' ? 'border-l-[3px] border-l-primary/60' : ''
                         }`}
                       >
                         <div className="flex items-center gap-1 mb-0.5">
