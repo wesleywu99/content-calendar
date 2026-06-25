@@ -48,12 +48,17 @@ export default function Sidebar() {
                 key={p}
                 type="button"
                 onClick={() => togglePlatform(p)}
-                className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors ${
-                  on ? 'text-on-surface' : 'text-on-surface-variant/40'
-                } hover:bg-black/[0.04]`}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-all ${
+                  on
+                    ? 'bg-white shadow-sm font-medium text-on-surface border border-outline-variant/30'
+                    : 'text-on-surface-variant/40 hover:bg-black/[0.05] hover:text-on-surface-variant/70 border border-transparent'
+                }`}
               >
-                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${meta.dot} ${on ? '' : 'opacity-30'}`} />
+                <span className={`w-2.5 h-2.5 rounded-full shrink-0 transition-all ${meta.dot} ${on ? 'opacity-100' : 'opacity-20'}`} />
                 {meta.label}
+                {on && (
+                  <span className="material-symbols-outlined text-[16px] ml-auto text-primary/60">check</span>
+                )}
               </button>
             )
           })}

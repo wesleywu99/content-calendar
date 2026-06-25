@@ -45,24 +45,30 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 export function ViewToggle() {
   const { view, setView } = useWorkspace()
   return (
-    <div className="flex items-center gap-1 bg-surface-container-low rounded-lg p-1">
+    <div className="flex items-center gap-0.5 bg-surface-container-low rounded-lg p-1">
       <button
         type="button"
         onClick={() => setView('calendar')}
-        className={`w-8 h-8 flex items-center justify-center rounded-md transition-all ${
-          view === 'calendar' ? 'bg-surface-container-lowest shadow-sm text-primary' : 'text-on-surface-variant'
+        className={`flex items-center gap-1.5 px-3 py-1.5 text-[13px] rounded-md transition-all ${
+          view === 'calendar'
+            ? 'bg-surface-container-lowest shadow-sm text-on-surface font-medium'
+            : 'text-on-surface-variant hover:text-on-surface'
         }`}
       >
         <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+        Calendar
       </button>
       <button
         type="button"
         onClick={() => setView('board')}
-        className={`w-8 h-8 flex items-center justify-center rounded-md transition-all ${
-          view === 'board' ? 'bg-surface-container-lowest shadow-sm text-primary' : 'text-on-surface-variant'
+        className={`flex items-center gap-1.5 px-3 py-1.5 text-[13px] rounded-md transition-all ${
+          view === 'board'
+            ? 'bg-surface-container-lowest shadow-sm text-on-surface font-medium'
+            : 'text-on-surface-variant hover:text-on-surface'
         }`}
       >
         <span className="material-symbols-outlined text-[18px]">view_kanban</span>
+        Board
       </button>
     </div>
   )
