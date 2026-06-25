@@ -1,4 +1,3 @@
-import TopBar from '@/components/TopBar'
 import CalendarView from '@/components/CalendarView'
 import { MOCK_ITEMS } from '@/lib/mock-data'
 
@@ -18,7 +17,6 @@ export default async function DashboardPage() {
   }
   return (
     <>
-      <TopBar />
       <CalendarView items={items} />
     </>
   )

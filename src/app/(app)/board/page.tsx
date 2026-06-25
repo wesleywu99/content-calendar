@@ -1,4 +1,3 @@
-import TopBar from '@/components/TopBar'
 import Board from '@/components/Board'
 import { MOCK_ITEMS } from '@/lib/mock-data'
 
@@ -18,7 +17,6 @@ export default async function BoardPage() {
   }
   return (
     <>
-      <TopBar />
       {/* Page Header */}
       <div className="px-10 py-6 flex justify-between items-end shrink-0">
         <div>
